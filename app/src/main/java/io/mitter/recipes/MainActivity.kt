@@ -79,4 +79,14 @@ class MainActivity : AppCompatActivity() {
         chatRecyclerViewAdapter.notifyItemInserted(messageList.size - 1)
         chatRecyclerView.scrollToPosition(messageList.size - 1)
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEnterForeground(enterForeground: EnterForeground) {
+        Log.d("MainAc", "Entered foreground!")
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEnterBackground(enterBackground: EnterBackground) {
+        Log.d("MainAc", "Entered background!")
+    }
 }

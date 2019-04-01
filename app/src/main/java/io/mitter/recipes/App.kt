@@ -1,6 +1,7 @@
 package io.mitter.recipes
 
 import android.app.Application
+import android.arch.lifecycle.ProcessLifecycleOwner
 import io.mitter.android.Mitter
 import io.mitter.android.domain.model.MitterConfig
 import io.mitter.android.domain.model.UserAuth
@@ -10,8 +11,12 @@ import org.greenrobot.eventbus.EventBus
 class App : Application() {
     lateinit var mitter: Mitter
 
+    private val appLifecycleListener: AppLifecycleListener by lazy { AppLifecycleListener() }
+
     override fun onCreate() {
         super.onCreate()
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleListener)
 
         val mitterConfig = MitterConfig(
             applicationId = "Izr37-Vm7TS-U8cIu-sVtqj"

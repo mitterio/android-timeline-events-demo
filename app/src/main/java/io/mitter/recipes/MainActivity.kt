@@ -45,28 +45,13 @@ class MainActivity : AppCompatActivity() {
                 override fun onValueAvailable(value: List<Message>) {
                     val messages = value.reversed()
 
-                    users.getUserProfile(
-                        userId = "VMCDv-czm5Z-nMDOJ-jJ67Y",
-                        onValueAvailableCallback = object : Mitter.OnValueAvailableCallback<EntityProfile> {
-                            override fun onError(apiError: ApiError) {
+                    messageList.addAll(messages)
+                    chatRecyclerViewAdapter = ChatRecyclerViewAdapter(
+                        messageList = messageList,
+                        currentUserId = mitter.getUserId()
+                    )
 
-                            }
-
-                            override fun onValueAvailable(value: EntityProfile) {
-                                val profilePhotoAttribute = value.attributes.first {
-                                    it.key == "recipes.ProfilePhoto"
-                                }
-
-                                messageList.addAll(messages)
-                                chatRecyclerViewAdapter = ChatRecyclerViewAdapter(
-                                    messageList = messageList,
-                                    currentUserId = mitter.getUserId(),
-                                    otherUserProfilePhoto = profilePhotoAttribute.value
-                                )
-
-                                chatRecyclerView?.adapter = chatRecyclerViewAdapter
-                            }
-                        })
+                    chatRecyclerView?.adapter = chatRecyclerViewAdapter
                 }
             }
         )
@@ -77,22 +62,6 @@ class MainActivity : AppCompatActivity() {
                 message = messageEditText.text.toString()
             )
             messageEditText.text.clear()
-        }
-
-        addProfilePhotoButton?.setOnClickListener {
-            users.addCurrentUserProfileAttribute(
-                attributeType = "recipes.ProfilePhoto",
-                attributeValue = "https://www.thewrap.com/wp-content/uploads/2017/07/Robert-Downey-Jr-Iron-Man-Pepper-Potts-Tony-Stark.jpg",
-                onValueUpdatedCallback = object : Mitter.OnValueUpdatedCallback {
-                    override fun onError(apiError: ApiError) {
-
-                    }
-
-                    override fun onSuccess() {
-                        Toast.makeText(this@MainActivity, "Profile photo updated!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            )
         }
     }
 

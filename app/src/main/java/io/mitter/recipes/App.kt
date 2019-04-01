@@ -53,6 +53,13 @@ class App : Application() {
 
             override fun onNewMessage(channelId: String, message: Message) {
                 EventBus.getDefault().post(message)
+
+                if (message.senderId.domainId() != mitter.getUserId()) {
+                    mitter.Messaging().addDeliveredTimelineEvent(
+                        channelId = channelId,
+                        messageIds = listOf(message.messageId)
+                    )
+                }
             }
 
             override fun onNewMessageTimelineEvent(messageId: String, timelineEvent: TimelineEvent) {

@@ -23,4 +23,14 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Hi, there!"/>
 
+    <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/timelineEventIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/selfMessageText"
+            android:src="@drawable/ic_check_black_24dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="15dp"/>
+
 </android.support.constraint.ConstraintLayout>

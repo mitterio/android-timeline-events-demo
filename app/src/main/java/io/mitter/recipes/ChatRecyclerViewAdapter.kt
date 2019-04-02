@@ -9,10 +9,12 @@ import io.mitter.models.mardle.messaging.Message
 import io.mitter.models.mardle.messaging.StandardTimelineEventTypeNames
 import kotlinx.android.synthetic.main.item_message_other.view.*
 import kotlinx.android.synthetic.main.item_message_self.view.*
+import org.greenrobot.eventbus.EventBus
 
 class ChatRecyclerViewAdapter(
     private val messageList: List<Message>,
-    private val currentUserId: String
+    private val currentUserId: String,
+    private val channelId: String
 ) : RecyclerView.Adapter<ChatRecyclerViewAdapter.ViewHolder>() {
     private val MESSAGE_SELF_VIEW = 0
     private val MESSAGE_OTHER_VIEW = 1
@@ -38,8 +40,6 @@ class ChatRecyclerViewAdapter(
                 if (senderId.domainId() == currentUserId) {
                     itemView?.selfMessageText?.text = textPayload
 
-                    val timelineEvents = message.timelineEvents
-
                     val readTimelineEvent = timelineEvents.find {
                         it.type == StandardTimelineEventTypeNames.Messages.ReadTime
                     }
@@ -61,6 +61,19 @@ class ChatRecyclerViewAdapter(
                     itemView?.timelineEventIcon?.setImageResource(R.drawable.ic_check_black_24dp)
                 } else {
                     itemView?.otherMessageText?.text = textPayload
+
+                    val readTimelineEvent = timelineEvents.find {
+                        it.type == StandardTimelineEventTypeNames.Messages.ReadTime
+                    }
+
+                    readTimelineEvent?.let { return@with }
+
+                    EventBus.getDefault().post(
+                        MarkRead(
+                            channelId = channelId,
+                            messageId = domainId()
+                        )
+                    )
                 }
             }
         }

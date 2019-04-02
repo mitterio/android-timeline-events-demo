@@ -21,14 +21,15 @@ class MainActivity : AppCompatActivity() {
     private val channelId = "KNOqT-6GwKj-oVZG3-gws36"
     private val messageList: MutableList<Message> = mutableListOf()
     private lateinit var chatRecyclerViewAdapter: ChatRecyclerViewAdapter
+    private lateinit var mitter: Mitter
+    private lateinit var messaging: Mitter.Messaging
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val mitter = (application as App).mitter
-        val users = mitter.Users()
-        val messaging = mitter.Messaging()
+        mitter = (application as App).mitter
+        messaging = mitter.Messaging()
         EventBus.getDefault().register(this)
 
         val linearLayoutManager = LinearLayoutManager(this)
@@ -48,7 +49,8 @@ class MainActivity : AppCompatActivity() {
                     messageList.addAll(messages)
                     chatRecyclerViewAdapter = ChatRecyclerViewAdapter(
                         messageList = messageList,
-                        currentUserId = mitter.getUserId()
+                        currentUserId = mitter.getUserId(),
+                        channelId = channelId
                     )
 
                     chatRecyclerView?.adapter = chatRecyclerViewAdapter
@@ -81,12 +83,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEnterForeground(enterForeground: EnterForeground) {
-        Log.d("MainAc", "Entered foreground!")
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEnterBackground(enterBackground: EnterBackground) {
-        Log.d("MainAc", "Entered background!")
+    fun onMarkRead(markRead: MarkRead) {
+        messaging.addReadTimelineEvent(
+            channelId = markRead.channelId,
+            messageIds = listOf(markRead.messageId)
+        )
     }
 }

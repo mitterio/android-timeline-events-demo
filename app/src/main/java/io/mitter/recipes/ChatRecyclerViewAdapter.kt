@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import io.mitter.models.mardle.messaging.Message
 import io.mitter.models.mardle.messaging.StandardTimelineEventTypeNames
+import io.mitter.models.mardle.messaging.TimelineEvent
 import kotlinx.android.synthetic.main.item_message_other.view.*
 import kotlinx.android.synthetic.main.item_message_self.view.*
 import org.greenrobot.eventbus.EventBus
@@ -29,6 +30,13 @@ class ChatRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindMessage(messageList[position])
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        when {
+            payloads.isEmpty() -> holder.bindMessage(messageList[position])
+            else -> holder.updateTimelineEvent(payloads[0] as List<TimelineEvent>)
+        }
     }
 
     override fun getItemViewType(position: Int) = if (messageList[position].senderId.domainId() == currentUserId)
@@ -75,6 +83,26 @@ class ChatRecyclerViewAdapter(
                         )
                     )
                 }
+            }
+        }
+
+        fun updateTimelineEvent(timelineEvents: List<TimelineEvent>) {
+            val readTimelineEvent = timelineEvents.find {
+                it.type == StandardTimelineEventTypeNames.Messages.ReadTime
+            }
+
+            readTimelineEvent?.let {
+                itemView?.timelineEventIcon?.setImageResource(R.drawable.ic_done_all_blue_24dp)
+                return
+            }
+
+            val deliveredTimelineEvent = timelineEvents.find {
+                it.type == StandardTimelineEventTypeNames.Messages.DeliveredTime
+            }
+
+            deliveredTimelineEvent?.let {
+                itemView?.timelineEventIcon?.setImageResource(R.drawable.ic_done_all_black_24dp)
+                return
             }
         }
     }

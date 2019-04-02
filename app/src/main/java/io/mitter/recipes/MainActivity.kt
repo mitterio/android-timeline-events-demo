@@ -89,4 +89,19 @@ class MainActivity : AppCompatActivity() {
             messageIds = listOf(markRead.messageId)
         )
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onTimelineEventAdded(timelineEventAdded: TimelineEventAdded) {
+        val position = messageList.indexOfFirst {
+            it.messageId == timelineEventAdded.messageId
+        }
+
+        val timelineEvents = messageList[position].timelineEvents.toMutableList()
+        timelineEvents.add(timelineEventAdded.timelineEvent)
+
+        messageList[position] = messageList[position].copy(
+            timelineEvents = timelineEvents
+        )
+        chatRecyclerViewAdapter.notifyItemChanged(position, timelineEvents)
+    }
 }

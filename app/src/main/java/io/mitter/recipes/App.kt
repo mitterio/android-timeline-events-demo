@@ -2,7 +2,9 @@ package io.mitter.recipes
 
 import android.app.Application
 import android.arch.lifecycle.ProcessLifecycleOwner
+import android.util.Log
 import io.mitter.android.Mitter
+import io.mitter.android.domain.model.LoggingLevel
 import io.mitter.android.domain.model.MitterConfig
 import io.mitter.android.domain.model.UserAuth
 import io.mitter.models.mardle.messaging.*
@@ -19,7 +21,8 @@ class App : Application() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(appLifecycleListener)
 
         val mitterConfig = MitterConfig(
-            applicationId = "Izr37-Vm7TS-U8cIu-sVtqj"
+            applicationId = "Izr37-Vm7TS-U8cIu-sVtqj",
+            loggingLevel = LoggingLevel.FULL
         )
 
         val userAuth = UserAuth(
@@ -63,7 +66,9 @@ class App : Application() {
             }
 
             override fun onNewMessageTimelineEvent(messageId: String, timelineEvent: TimelineEvent) {
-
+                EventBus.getDefault().post(
+                    TimelineEventAdded(messageId, timelineEvent)
+                )
             }
 
             override fun onParticipationChangedEvent(

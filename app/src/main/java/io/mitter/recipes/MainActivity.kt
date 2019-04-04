@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class MainActivity : AppCompatActivity() {
-    private val channelId = "KNOqT-6GwKj-oVZG3-gws36"
+    private val channelId = "QoQJX-T6NtE-fyzhA-0mgTE"
     private val messageList: MutableList<Message> = mutableListOf()
     private lateinit var chatRecyclerViewAdapter: ChatRecyclerViewAdapter
     private lateinit var mitter: Mitter

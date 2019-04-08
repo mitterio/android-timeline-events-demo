@@ -11,6 +11,7 @@ import android.widget.Toast
 import io.mitter.android.Mitter
 import io.mitter.android.error.model.base.ApiError
 import io.mitter.data.domain.entity.EntityProfile
+import io.mitter.data.domain.user.User
 import io.mitter.models.mardle.messaging.Message
 import kotlinx.android.synthetic.main.activity_main.*
 import org.greenrobot.eventbus.EventBus
@@ -35,6 +36,16 @@ class MainActivity : AppCompatActivity() {
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.stackFromEnd = true
         chatRecyclerView?.layoutManager = linearLayoutManager
+
+        mitter.Users().getCurrentUser(object : Mitter.OnValueAvailableCallback<User> {
+            override fun onError(apiError: ApiError) {
+
+            }
+
+            override fun onValueAvailable(value: User) {
+                Log.d("MainAc", "User is: $value")
+            }
+        })
 
         messaging.getMessagesInChannel(
             channelId = channelId,

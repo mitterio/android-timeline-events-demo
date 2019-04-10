@@ -3,7 +3,11 @@ package io.mitter.recipes
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import com.google.firebase.iid.FirebaseInstanceId
 import io.mitter.android.Mitter
+import io.mitter.android.error.model.base.ApiError
+import io.mitter.models.delman.DeliveryEndpoint
 import io.mitter.recipes.remote.ApiService
 import io.mitter.recipes.remote.LoginRequest
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -46,7 +50,35 @@ class LoginActivity : AppCompatActivity() {
                 mitter.setUserId(loginResponse.userId)
                 mitter.setUserAuthToken(loginResponse.userAuth)
 
-                startActivity(Intent(this, MainActivity::class.java))
+                FirebaseInstanceId.getInstance().instanceId
+                    .addOnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            showErrorToast()
+                            return@addOnCompleteListener
+                        }
+
+                        val token = task.result?.token
+                        mitter.registerFcmToken(
+                            token = token!!,
+                            onValueAvailableCallback = object : Mitter.OnValueAvailableCallback<DeliveryEndpoint> {
+                                override fun onError(apiError: ApiError) {
+                                    showErrorToast()
+                                }
+
+                                override fun onValueAvailable(value: DeliveryEndpoint) {
+                                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                }
+                            }
+                        )
+                    }
             }
+    }
+
+    private fun showErrorToast() {
+        Toast.makeText(
+            this,
+            "Unable to register delivery endpoint. Please try logging in again!",
+            Toast.LENGTH_LONG
+        ).show()
     }
 }

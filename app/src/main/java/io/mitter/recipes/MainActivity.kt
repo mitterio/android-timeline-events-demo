@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class MainActivity : AppCompatActivity() {
-    private val channelId = "QoQJX-T6NtE-fyzhA-0mgTE"
+    private val channelId = "582cc980-5ac8-11e9-96c6-d702754b6d28"
     private val messageList: MutableList<Message> = mutableListOf()
     private lateinit var chatRecyclerViewAdapter: ChatRecyclerViewAdapter
     private lateinit var mitter: Mitter
@@ -36,16 +36,6 @@ class MainActivity : AppCompatActivity() {
         val linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.stackFromEnd = true
         chatRecyclerView?.layoutManager = linearLayoutManager
-
-        mitter.Users().getCurrentUser(object : Mitter.OnValueAvailableCallback<User> {
-            override fun onError(apiError: ApiError) {
-
-            }
-
-            override fun onValueAvailable(value: User) {
-                Log.d("MainAc", "User is: $value")
-            }
-        })
 
         messaging.getMessagesInChannel(
             channelId = channelId,

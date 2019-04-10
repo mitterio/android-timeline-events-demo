@@ -17,8 +17,8 @@ git clone https://github.com/mitterio/android-timeline-events-demo.git
 
 After that, open your project using Android Studio and make following changes:
 
-* Add your application ID. Open `App.kt` and replace the existing application ID with your own application ID.
-* Add a channel ID. Open `MainActivity.kt` and replace the existing channel ID with the channel ID that you received after running the local server (as mentioned in the previous section)
+* **Add your application ID**. Open `App.kt` and replace the existing application ID with your own application ID.
+* **Add a channel ID**. Open `MainActivity.kt` and replace the existing channel ID with the channel ID that you received after running the local server (as mentioned in the previous section)
 
 ## How to run?
 

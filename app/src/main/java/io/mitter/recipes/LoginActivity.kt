@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
                             token = token!!,
                             onValueAvailableCallback = object : Mitter.OnValueAvailableCallback<DeliveryEndpoint> {
                                 override fun onError(apiError: ApiError) {
-                                    showErrorToast()
+                                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                                 }
 
                                 override fun onValueAvailable(value: DeliveryEndpoint) {
